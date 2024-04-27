@@ -8,6 +8,7 @@ class UsersProfileTest < ActionDispatch::IntegrationTest
   end
 
   test "profile display" do
+    log_in_as(@user)
     get user_path(@user)
     assert_template 'users/show'
     assert_select 'title', full_title(@user.name)
@@ -18,5 +19,8 @@ class UsersProfileTest < ActionDispatch::IntegrationTest
     @user.microposts.paginate(page: 1).each do |micropost|
       assert_match micropost.content, response.body
     end
+    assert_select "a[href=?]", following_user_path(@user)
+    assert_select "a[href=?]", followers_user_path(@user)
   end
+
 end
